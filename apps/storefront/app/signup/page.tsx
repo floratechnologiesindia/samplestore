@@ -39,9 +39,11 @@ export default function SignupPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, name, password }),
       });
-      const data = (await res.json()) as
-        | { id: number; email: string; name?: string | null; message?: string }
-        | { message: string };
+      const data = (await res.json()) as {
+        id: number;
+        email: string;
+        name?: string | null;
+      };
       if (!res.ok) {
         throw new Error(
           (data as { message?: string }).message ||
