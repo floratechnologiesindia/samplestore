@@ -30,8 +30,8 @@ export default function RootLayout({
                   <div className="text-xs text-zinc-500">Boutique</div>
                 </div>
               </div>
-              <div className="flex items-center gap-4 text-sm font-medium text-zinc-700">
-                <nav className="flex items-center gap-4">
+              <div className="flex items-center gap-3 text-xs sm:gap-4 sm:text-sm font-medium text-zinc-700">
+                <nav className="flex flex-wrap items-center gap-3 sm:gap-4 justify-end">
                   <a href="/" className="hover:text-zinc-900">
                     Shop
                   </a>
