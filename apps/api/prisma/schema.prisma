@@ -1,0 +1,184 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Customer {
+  id              Int       @id @default(autoincrement())
+  email           String    @unique
+  name            String?
+  hashedPassword  String?
+  marketingOptIn  Boolean   @default(false)
+  createdAt       DateTime  @default(now())
+  orders          Order[]
+  addresses       Address[]
+  reviews         Review[]
+  cart            Cart?
+}
+
+model AdminUser {
+  id             Int      @id @default(autoincrement())
+  email          String   @unique
+  name           String?
+  hashedPassword String
+  role           String
+  createdAt      DateTime @default(now())
+}
+
+model Address {
+  id         Int       @id @default(autoincrement())
+  customer   Customer? @relation(fields: [customerId], references: [id])
+  customerId Int?
+  line1      String
+  line2      String?
+  city       String
+  region     String?
+  country    String
+  postalCode String
+  phone      String?
+  orders     Order[]
+}
+
+model Category {
+  id       Int        @id @default(autoincrement())
+  name     String
+  slug     String     @unique
+  parentId Int?
+  parent   Category?  @relation("CategoryToSubcategories", fields: [parentId], references: [id])
+  children Category[] @relation("CategoryToSubcategories")
+  products Product[]
+}
+
+model Product {
+  id          Int              @id @default(autoincrement())
+  name        String
+  slug        String           @unique
+  description String
+  basePrice   Int
+  status      String           @default("draft")
+  brand       String?
+  categoryId  Int?
+  category    Category?        @relation(fields: [categoryId], references: [id])
+  variants    ProductVariant[]
+  media       MediaAsset[]
+  reviews     Review[]
+}
+
+model ProductVariant {
+  id         Int      @id @default(autoincrement())
+  product    Product  @relation(fields: [productId], references: [id])
+  productId  Int
+  sku        String   @unique
+  size       String?
+  color      String?
+  price      Int?
+  stock      Int      @default(0)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  orderItems OrderItem[]
+  cartItems  CartItem[]
+}
+
+model MediaAsset {
+  id         Int      @id @default(autoincrement())
+  url        String
+  altText    String?
+  productId  Int?
+  product    Product? @relation(fields: [productId], references: [id])
+}
+
+model Cart {
+  id         Int        @id @default(autoincrement())
+  customerId Int?       @unique
+  customer   Customer?  @relation(fields: [customerId], references: [id])
+  sessionId  String?    @unique
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  items      CartItem[]
+}
+
+model CartItem {
+  id               Int            @id @default(autoincrement())
+  cart             Cart           @relation(fields: [cartId], references: [id])
+  cartId           Int
+  productVariant   ProductVariant @relation(fields: [productVariantId], references: [id])
+  productVariantId Int
+  quantity         Int
+  unitPrice        Int
+}
+
+model Order {
+  id             Int         @id @default(autoincrement())
+  orderNumber    String      @unique
+  customer       Customer?   @relation(fields: [customerId], references: [id])
+  customerId     Int?
+  address        Address?    @relation(fields: [addressId], references: [id])
+  addressId      Int?
+  status         String      @default("pending")
+  paymentStatus  String      @default("pending")
+  shippingStatus String      @default("not_shipped")
+  subtotal       Int
+  discountTotal  Int         @default(0)
+  shippingTotal  Int
+  taxTotal       Int         @default(0)
+  grandTotal     Int
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+  items          OrderItem[]
+  payment        Payment?
+}
+
+model OrderItem {
+  id               Int            @id @default(autoincrement())
+  order            Order          @relation(fields: [orderId], references: [id])
+  orderId          Int
+  productVariant   ProductVariant @relation(fields: [productVariantId], references: [id])
+  productVariantId Int
+  quantity         Int
+  unitPrice        Int
+  discountAmount   Int            @default(0)
+}
+
+model Payment {
+  id        Int      @id @default(autoincrement())
+  order     Order    @relation(fields: [orderId], references: [id])
+  orderId   Int      @unique
+  provider  String   @default("dummy")
+  status    String   @default("pending")
+  amount    Int
+  reference String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model DiscountCode {
+  id         Int      @id @default(autoincrement())
+  code       String   @unique
+  type       String
+  value      Int
+  usageLimit Int?
+  usedCount  Int      @default(0)
+  startsAt   DateTime?
+  endsAt     DateTime?
+  isActive   Boolean  @default(true)
+}
+
+model Review {
+  id         Int       @id @default(autoincrement())
+  product    Product   @relation(fields: [productId], references: [id])
+  productId  Int
+  customer   Customer  @relation(fields: [customerId], references: [id])
+  customerId Int
+  rating     Int
+  title      String?
+  body       String?
+  status     String    @default("pending")
+  createdAt  DateTime  @default(now())
+}

@@ -1,0 +1,24 @@
+{
+  "name": "trendvibes-boutique-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "TrendVibes Boutique monorepo (storefront, API, admin).",
+  "scripts": {
+    "dev:api": "npm --workspace @trendvibes/api run dev",
+    "dev:storefront": "npm --workspace storefront run dev",
+    "dev:storefront:3001": "npm --workspace storefront run dev:3001",
+    "dev:admin": "npm --workspace admin run dev",
+    "dev:all": "concurrently \"npm run dev:api\" \"npm run dev:storefront\" \"npm run dev:admin\"",
+    "lint": "npm run lint --workspaces",
+    "build": "npm run build --workspaces"
+  },
+  "workspaces": [
+    "apps/*"
+  ],
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}
