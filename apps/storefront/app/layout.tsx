@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import AccountMenu from "../components/account-menu";
+import MainNav from "../components/main-nav";
 
 export const metadata: Metadata = {
   title: "TrendVibes Boutique",
@@ -18,7 +18,7 @@ export default function RootLayout({
       <body className="antialiased bg-zinc-50 text-zinc-900 font-sans">
         <div className="min-h-screen flex flex-col">
           <header className="border-b border-zinc-200 bg-white/80 backdrop-blur">
-            <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 sm:px-6">
+            <div className="relative mx-auto flex max-w-6xl items-center justify-between px-4 py-4 sm:px-6">
               <div className="flex items-center gap-2">
                 <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-zinc-900 text-xs font-semibold text-white">
                   TV
@@ -30,23 +30,7 @@ export default function RootLayout({
                   <div className="text-xs text-zinc-500">Boutique</div>
                 </div>
               </div>
-              <div className="flex items-center gap-3 text-xs sm:gap-4 sm:text-sm font-medium text-zinc-700">
-                <nav className="flex flex-wrap items-center gap-3 sm:gap-4 justify-end">
-                  <a href="/" className="hover:text-zinc-900">
-                    Shop
-                  </a>
-                  <a href="/about" className="hover:text-zinc-900">
-                    About
-                  </a>
-                  <a href="/cart" className="hover:text-zinc-900">
-                    Cart
-                  </a>
-                  <a href="/contact" className="hover:text-zinc-900">
-                    Contact
-                  </a>
-                  <AccountMenu />
-                </nav>
-              </div>
+              <MainNav />
             </div>
           </header>
           <main className="flex-1">{children}</main>
